@@ -18,6 +18,7 @@ import time
 import os
 from PIL import Image
 import base64
+import google.generativeai as genai
 
 def visualize_clusters(data_scaled, clusters, model_name, n_clusters_or_eps, num_features, feature_names):
     """Visualizes clusters using PCA or direct scatter plot."""
@@ -92,7 +93,7 @@ def visualize_clusters(data_scaled, clusters, model_name, n_clusters_or_eps, num
             ax.legend(title='Cluster', bbox_to_anchor=(1.05, 1), loc='upper left')
             plt.tight_layout(rect=[0, 0, 0.85, 1])
             st.pyplot(fig)
-            plt.close(fig)#test
+            plt.close(fig)
          except Exception as e:
             st.error(f"Error during 1D strip plot visualization: {e}")
     else: # num_features == 0 - should not happen due to earlier checks
@@ -100,6 +101,8 @@ def visualize_clusters(data_scaled, clusters, model_name, n_clusters_or_eps, num
 
 def main():
     logo_path = "logo.PNG"  # Replace with the actual path to your logo
+
+    genai.configure(api_key="AIzaSyCIPfWDzE4T_xm9upBC0XoRSSod7FkPXWA")
 
     if os.path.exists(logo_path):
         st.set_page_config(page_title="DeepStat", page_icon=logo_path, layout="wide")
@@ -183,10 +186,10 @@ def main():
 
     # Initial tabs before "Analyze" is clicked
     if not st.session_state.get("analyze", False):
-        description_tab, about_team_tab = st.tabs(["Description", "About the Team"])
+        welcome_tab, team_tab = st.tabs(["Welcome", "Team"])
 
-        with description_tab:
-            st.header("Project Description")
+        with welcome_tab:
+            st.header("Welcome to DeepStat")
             # Display the logo after the header
             if os.path.exists(logo_path):
                 st.image(logo_path, width=100)  # Adjust width as needed
@@ -201,7 +204,7 @@ def main():
 
             # You can add more details here
 
-        with about_team_tab:
+        with team_tab:
             st.header("About the Team")
 
             # Display the logo after the header
@@ -461,6 +464,16 @@ def main():
                                 sns.lineplot(x=df[vis_cols[0]], y=df[col], ax=ax, label=col)
                             ax.legend()
                         st.pyplot(fig)
+
+                        # Generate AI insights
+                        try:
+                            model = genai.GenerativeModel('gemini-2.5-flash')
+                            prompt = f"Analyze this {graph_type} visualization for columns {', '.join(vis_cols)} from a dataset. Provide key insights, patterns, outliers, and recommendations based on the plot."
+                            response = model.generate_content(prompt)
+                            st.subheader("🤖 AI Insights")
+                            st.write(response.text)
+                        except Exception as e:
+                            st.error(f"Error generating AI insights: {e}")
 
             with tab7:
                 st.header("Model Training and Prediction")
@@ -1400,7 +1413,7 @@ def main():
                             st.warning(f"Image not found: {image_paths[i]}")
 
     # Footer section
-    footer_text = "© 2025 DeepStat. All rights reserved. | Name: Preet(D023), Aakanksha(D014), Sakshi(D026) | Address: NMIMS,Navi Mumbai | Contact:preet101104@gmail.com" # Add your details here.
+    footer_text = "© 2025 DeepStat. All rights reserved. | Names: Preet(D023), Aakanksha(D014), Sakshi(D026) | Address: NMIMS,Navi Mumbai | Contact:preet101104@gmail.com" # Add your details here.
     st.markdown(f'<div class="footer">{footer_text}</div>', unsafe_allow_html=True)
 
     # Disclaimer Section
