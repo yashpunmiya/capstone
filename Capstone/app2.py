@@ -92,7 +92,7 @@ def visualize_clusters(data_scaled, clusters, model_name, n_clusters_or_eps, num
             ax.legend(title='Cluster', bbox_to_anchor=(1.05, 1), loc='upper left')
             plt.tight_layout(rect=[0, 0, 0.85, 1])
             st.pyplot(fig)
-            plt.close(fig)
+            plt.close(fig)#test
          except Exception as e:
             st.error(f"Error during 1D strip plot visualization: {e}")
     else: # num_features == 0 - should not happen due to earlier checks
