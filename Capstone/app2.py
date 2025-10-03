@@ -17,6 +17,7 @@ import plotly.express as px
 import time
 import os
 from PIL import Image
+import base64
 
 def visualize_clusters(data_scaled, clusters, model_name, n_clusters_or_eps, num_features, feature_names):
     """Visualizes clusters using PCA or direct scatter plot."""
@@ -98,7 +99,7 @@ def visualize_clusters(data_scaled, clusters, model_name, n_clusters_or_eps, num
         st.warning("No features available for visualization.")
 
 def main():
-    logo_path = "logo.png"  # Replace with the actual path to your logo
+    logo_path = "logo.PNG"  # Replace with the actual path to your logo
 
     if os.path.exists(logo_path):
         st.set_page_config(page_title="DeepStat", page_icon=logo_path, layout="wide")
@@ -170,7 +171,7 @@ def main():
 
     if os.path.exists(logo_path):
         logo_img = Image.open(logo_path)
-        st.markdown(f'<div class="logo-area"><img src="data:image/png;base64,{open(logo_path, "rb").read().hex()}"></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="logo-area"><img src="data:image/png;base64,{base64.b64encode(open(logo_path, "rb").read()).decode("utf-8")}"></div>', unsafe_allow_html=True)
 
     st.markdown(f"<div class='title-area'><h1>DeepStat: From Raw Data to Clarity</h1></div>", unsafe_allow_html=True)
 
